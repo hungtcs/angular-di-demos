@@ -1,0 +1,11 @@
+/* @theme custom */
+
+@import 'default';
+
+.red {
+  color: red;
+}
+
+.columns {
+  column-count: 2;
+}
