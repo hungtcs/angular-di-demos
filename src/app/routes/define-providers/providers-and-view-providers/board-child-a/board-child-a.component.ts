@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FLOWER } from '../injection-tokens';
+import { FLOWER } from '../../injection-tokens';
+import { Component, Inject } from '@angular/core';
 
 @Component({
   selector: 'did-board-child-a',

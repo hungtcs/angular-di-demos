@@ -1,5 +1,4 @@
-import { FLOWER } from './injection-tokens';
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'did-define-providers',

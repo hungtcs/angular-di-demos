@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'angular-di-demos';
+  public title = 'Angular Dependency Injection Demos';
+
 }

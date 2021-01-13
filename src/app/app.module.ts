@@ -10,7 +10,9 @@ import { BrowserModule } from '@angular/platform-browser';
     RoutesModule,
     BrowserModule,
   ],
-  providers: [],
+  providers: [
+
+  ],
   bootstrap: [AppComponent],
   declarations: [
     AppComponent

@@ -58,7 +58,13 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/lib/highlight/highlight.pack.js",
+              "node_modules/highlightjs-line-numbers.js/dist/highlightjs-line-numbers.min.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "highlight.js"
+            ]
           },
           "configurations": {
             "production": {

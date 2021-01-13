@@ -1,4 +1,4 @@
-import { FLOWER } from '../injection-tokens';
+import { FLOWER } from '../../injection-tokens';
 import { Component, Inject, OnInit, SkipSelf } from '@angular/core';
 
 @Component({

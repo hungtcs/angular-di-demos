@@ -8,13 +8,13 @@ backgroundColor: #F7E401
 
 ![bg left:50% width:auto](./images/3.jpeg)
 
-# Angular DI
+# Angular DI 和组件通讯
 
 ### Angular 依赖注入主题的分享
 
 #### 分享人：刘文杰
 
-#### 分享日期：2020-12
+#### 分享日期：2021-01
 
 ---
 
@@ -28,6 +28,27 @@ backgroundColor: #F7E401
 ##### 4. ModuleWithProviders
 ##### 5. Talk is cheap, show me the code
 
+---
+
+Angular有自己的术语词汇。大多数Angular术语是常见的英语单词或计算术语，但是在Angular系统中具有特定含义。
+各种Angular术语定义可以通过下面的连接查看：https://angular.io/guide/glossary
+
+---
+
+- provider
+    An object that implements one of the Provider interfaces.
+    A provider object defines how to obtain an injectable dependency associated with a DI token.
+    An injector uses the provider to create a new instance of a dependency for a class that requires it.
+- DI token
+    A lookup token associated with a dependency provider, for use with the dependency injection system.
+
+---
+
+- injector
+    An object in the Angular dependency-injection system that can find a named dependency in its cache or create a dependency using a configured provider.
+    Injectors are created for NgModules automatically as part of the bootstrap process and are inherited through the component hierarchy.
+- dependency injection (DI)
+    A design pattern and mechanism for creating and delivering some parts of an application (dependencies) to other parts of an application that require them.
 ---
 
 # 第一节 什么是依赖注入？
@@ -215,6 +236,24 @@ Child ModuleInjectors are created when lazy loading other @NgModules.
 ---
 
 # ModuleWithProviders
+
+```typescript
+export class ConfigurableModule {
+
+  public static register(options: ConfigurableModuleOptions): ModuleWithProviders<ConfigurableModule> {
+    return {
+      ngModule: ConfigurableModule,
+      providers: [
+        {
+          provide: CONFIGURABLE_MODULE_OPTIONS,
+          useValue: options,
+        },
+      ],
+    };
+  }
+
+}
+```
 
 ---
 
