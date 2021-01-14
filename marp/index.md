@@ -6,11 +6,7 @@ theme: custom
 backgroundColor: #F7E401
 ---
 
-![bg left:50% width:auto](./images/3.jpeg)
-
-# Angular DI 和组件通讯
-
-### Angular 依赖注入主题的分享
+# Angular的Service及组件通讯
 
 #### 分享人：刘文杰
 
@@ -18,37 +14,27 @@ backgroundColor: #F7E401
 
 ---
 
-
 ![bg right:45% width:100%](./images/1.png)
 
 # 目录
+## 依赖注入部分
 ##### 1. 什么是依赖注入？
 ##### 2. 从Angular Service入手
-##### 3. Angular Injectors
-##### 4. ModuleWithProviders
-##### 5. Talk is cheap, show me the code
+##### 3. Angular Hierarchical Injectors
+##### 4. @Self,@Host,@SkipSelf,@Optional
+<!-- ##### 4. ModuleWithProviders -->
 
 ---
 
-Angular有自己的术语词汇。大多数Angular术语是常见的英语单词或计算术语，但是在Angular系统中具有特定含义。
-各种Angular术语定义可以通过下面的连接查看：https://angular.io/guide/glossary
+![bg right:50% width:100%](./images/components.png)
 
----
+# 目录
+## 组件通讯部分
+##### 1. 组件间交换数据常见方式
+##### 2. 父子组件之间如何交换数据
+##### 3. 同级组件之间如何交换数据
+##### 4. 跨级组件之间如何交换数据
 
-- provider
-    An object that implements one of the Provider interfaces.
-    A provider object defines how to obtain an injectable dependency associated with a DI token.
-    An injector uses the provider to create a new instance of a dependency for a class that requires it.
-- DI token
-    A lookup token associated with a dependency provider, for use with the dependency injection system.
-
----
-
-- injector
-    An object in the Angular dependency-injection system that can find a named dependency in its cache or create a dependency using a configured provider.
-    Injectors are created for NgModules automatically as part of the bootstrap process and are inherited through the component hierarchy.
-- dependency injection (DI)
-    A design pattern and mechanism for creating and delivering some parts of an application (dependencies) to other parts of an application that require them.
 ---
 
 # 第一节 什么是依赖注入？
@@ -90,10 +76,10 @@ export class FooComponent {
 
 # 第二节 从Service入手，逐步深入Angular的DI机制
 
-### 1.1 ValueProvider、ClassProvider、ExistingProvider、FactoryProvider
-### 1.3 InjectionToken
-### 2.1 @Inject装饰器
-### 2.2 如何通过injector动态获取provider
+### 1. ValueProvider、ClassProvider、ExistingProvider、FactoryProvider
+### 2. InjectionToken
+### 3. @Inject装饰器
+### 4. 通过injector动态获取provider
 
 ---
 
@@ -108,35 +94,6 @@ interface ValueProvider extends ValueSansProvider {
 
   // inherited from core/ValueSansProvider
   useValue: any
-}
-```
-
----
-
-# ConstructorProvider
-
-```typescript
-interface ConstructorProvider extends ConstructorSansProvider {
-  provide: Type<any>
-  multi?: boolean
-
-  // inherited from core/ConstructorSansProvider
-  deps?: any[]
-}
-```
-
----
-
-# StaticClassProvider
-
-```typescript
-interface StaticClassProvider extends StaticClassSansProvider {
-  provide: any
-  multi?: boolean
-
-  // inherited from core/StaticClassSansProvider
-  useClass: Type<any>
-  deps: any[]
 }
 ```
 
@@ -210,8 +167,8 @@ _同一元素上的Component和Directive共享一个ElementInjector。_
 
 #### Providers And ViewProviders
 
-`viewProviders` limits the provider to children other than projected content, while `providers` allows all children to use the provider.
-The value is that `viewProviders` allows you to prevent projected content from messing with your services, which could be especially useful in libraries.
+`viewProviders`限制provider仅在子元素中可用，在插入内容（ng-content）中不可用。
+`viewProviders`会屏蔽插入的内容，因此在开发library的时候非常有用，这可以减少library对内容的干扰。
 
 ---
 
@@ -222,16 +179,42 @@ The value is that `viewProviders` allows you to prevent projected content from m
 - 使用`@Injectable`装饰器并在`providedIn`属性中引用一个`NgModule`
 - 在`@NgModule`装饰器的`providers`数组中声明
 
+在一个层级的ModuleInjector中，所有providers都是被平铺的。
+
+注意：组件中注入Provider时的查找顺序是从使用的地方开始，而不是声明的地方。
+
+> If Angular doesn't find the provider in any ElementInjectors,
+> it goes back to the element where **the request originated** and looks in the ModuleInjector hierarchy.
+
 ---
 
 ## Tree-shaking and @Injectable()
-Using the @Injectable() providedIn property is preferable to the @NgModule() providers array because with @Injectable() providedIn, optimization tools can perform tree-shaking, which removes services that your app isn't using and results in smaller bundle sizes.
 
-Tree-shaking is especially useful for a library because the application which uses the library may not have a need to inject it.
+更加推荐使用`@Injectable()`配合`providerIn`来创建Service，因为使用这种方式创建的Service便于构建优化代码。
+这种方式，没有被inject的Service是不存在文件引用关系的，因此构建工具可以去除没有用到的代码来减少构建包的体积。
 
-ModuleInjector is configured by the @NgModule.providers and NgModule.imports property. ModuleInjector is a flattening of all of the providers arrays which can be reached by following the NgModule.imports recursively.
+tip: 此处我不确定它是否有用，因为使用injector仍可注入，目测无法tree-shaking。
 
-Child ModuleInjectors are created when lazy loading other @NgModules.
+**此处Angular目前仍未完善，如果使用providerIn引用NgModule会出错，相关issues：https://github.com/angular/angular/issues/25784**
+
+---
+
+### @Self
+限制到当前ElementInjector
+
+### *@Host
+限制到当前视图边界，限制到当前模板？
+- https://indepth.dev/posts/1063/a-curious-case-of-the-host-decorator-and-element-injectors-in-angular
+
+### @SkipSelf
+跳过当前ElementInjector
+
+### @Optional
+如果无法解析，那么定向到`NullInjector`
+
+---
+
+![bg height:100% width:100%](./images/Angular%20DI.png)
 
 ---
 
@@ -254,6 +237,15 @@ export class ConfigurableModule {
 
 }
 ```
+
+---
+
+# 组件间交换数据常见方式
+
+- 通过`@Input`和`@Output`
+- 父组件通过`ViewChild`或者`ViewChildren`等方式
+- 借助Service或者其他方式间接通信
+- 通过inject parent component通信
 
 ---
 

@@ -1,10 +1,23 @@
 
 <details open>
-  <summary>service define</summary>
+  <summary>Service的定义</summary>
 
   <p>Value A: {{ valueA }}</p>
   <!-- <p>Value B: {{ valueB }}</p> -->
   <p>Value C: {{ valueC }}</p>
 
   <p>Service A === Service C： <code>{{ serviceAEqulasServiceC }}</code></p>
+</details>
+
+<details open>
+  <summary><code>@Self</code>和<code>@Host</code>的区别</summary>
+  <did-self-host></did-self-host>
+</details>
+
+<details open>
+  <summary>容易出错的例子1：</summary>
+  <did-common1-com1></did-common1-com1>
+  <p>
+    此处<code>SomeCommon1Module</code>隐晦的依赖了<code>SomeCommon2Module</code>，<i>这是一个运行时错误，编译的时候不会体现出来</i>。
+  </p>
 </details>
